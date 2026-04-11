@@ -54,12 +54,13 @@ public class AuthenticationService {
         JWSHeader jwsHeader = new JWSHeader(JWSAlgorithm.HS512);
 
         JWTClaimsSet jwtClaimSet = new JWTClaimsSet.Builder()
+                .subject(userEntity.getEmail())
                 .issuer("lpcuong.com")
                 .issueTime(new Date())
                 .expirationTime(new Date(
                         Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli()
                 ))
-                .claim("userId", "Custom")
+                .claim("scope", userEntity.getRole())
                 .build();
         Payload payload = new Payload(jwtClaimSet.toJSONObject());
         JWSObject jwsObject = new JWSObject(jwsHeader, payload);

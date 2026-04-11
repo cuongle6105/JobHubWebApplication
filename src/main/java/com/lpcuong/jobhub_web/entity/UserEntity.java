@@ -7,6 +7,9 @@ import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.util.Set;
+
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -23,6 +26,8 @@ public class UserEntity {
 
     String password;
 
+    String role;
+
     String status;
 
     @CreationTimestamp
@@ -30,4 +35,5 @@ public class UserEntity {
 
     @UpdateTimestamp
     String updated_at;
+
 }

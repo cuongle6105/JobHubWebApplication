@@ -6,6 +6,8 @@ import com.lpcuong.jobhub_web.dto.reponse.UserResponse;
 import com.lpcuong.jobhub_web.dto.request.UserCreationRequest;
 import com.lpcuong.jobhub_web.dto.request.UserUpdateRequest;
 import com.lpcuong.jobhub_web.entity.UserEntity;
+import com.lpcuong.jobhub_web.enums.Role;
+import com.lpcuong.jobhub_web.enums.Status;
 import com.lpcuong.jobhub_web.exception.AppException;
 import com.lpcuong.jobhub_web.exception.ErrorCode;
 import com.lpcuong.jobhub_web.mapper.UserMapper;
@@ -18,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,15 +30,20 @@ import java.util.stream.Collectors;
 public class UserService {
     UserRepository userRepository;
     UserMapper userMapper;
+    PasswordEncoder passwordEncoder;
 
     public UserResponse createUser(UserCreationRequest userCreationRequest) {
         if (userRepository.existsByemail(userCreationRequest.getEmail())) {
             throw new AppException(ErrorCode.USER_EXISTED);
         }
         UserEntity userEntity = userMapper.toUserEntity(userCreationRequest);
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         userEntity.setPassword(passwordEncoder.encode(userCreationRequest.getPassword()));
-        userEntity.setStatus("ACTIVE");
+        try{
+            userEntity.setRole(String.valueOf(Role.valueOf(userCreationRequest.getRole().toUpperCase())));
+        } catch (IllegalArgumentException e){
+            throw new AppException(ErrorCode.INVALID_ROLE);
+        }
+        userEntity.setStatus(Status.ACTIVE.name());
         userRepository.save(userEntity);
         return userMapper.toUserResponse(userEntity);
     }
