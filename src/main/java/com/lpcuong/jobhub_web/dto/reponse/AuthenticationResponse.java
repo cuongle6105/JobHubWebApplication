@@ -1,6 +1,5 @@
 package com.lpcuong.jobhub_web.dto.reponse;
 
-import jakarta.validation.constraints.Email;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -9,11 +8,7 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UserResponse {
-    String id;
-    String email;
-    String password;
-    String status;
-    String created_at;
-    String updated_at;
+public class AuthenticationResponse {
+    String token;
+    boolean authenticated;
 }

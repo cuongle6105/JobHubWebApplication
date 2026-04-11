@@ -13,6 +13,8 @@ import com.lpcuong.jobhub_web.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -31,6 +33,9 @@ public class UserService {
             throw new AppException(ErrorCode.USER_EXISTED);
         }
         UserEntity userEntity = userMapper.toUserEntity(userCreationRequest);
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        userEntity.setPassword(passwordEncoder.encode(userCreationRequest.getPassword()));
+        userEntity.setStatus("ACTIVE");
         userRepository.save(userEntity);
         return userMapper.toUserResponse(userEntity);
     }
